@@ -4,7 +4,7 @@ import subprocess
 from shiny import App, render, ui
 
 app_ui = ui.page_fluid(
-    ui.h2("Environment stuff!"),
+    ui.h2("Tool versions:"),
     ui.span("Python"),
     ui.output_text_verbatim("python"),
     ui.input_text_area("cmd", "Command to run", placeholder="Enter text"),
