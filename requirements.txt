@@ -20,3 +20,4 @@ uc-micro-py==1.0.2
 uvicorn==0.24.0.post1
 watchfiles==0.21.0
 websockets==12.0
+i don't exist
