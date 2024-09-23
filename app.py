@@ -23,7 +23,7 @@ def server(input, output, session):
     @output
     @render.table
     def system():
-        mem = int(psutil.virtual_memory().total / 1024 / 1024)
+        mem = f"{int(psutil.virtual_memory().total / 1024 / 1024 / 1024)} GiB"
         return pd.DataFrame([
             {"name":"python version","value":platform.python_version()},
             {"name":"cpu count","value":multiprocessing.cpu_count()},
