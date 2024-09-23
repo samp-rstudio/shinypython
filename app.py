@@ -59,7 +59,7 @@ app = App(app_ui, server)
 
 def run(input: list[str]) -> str:
     try:
-        return subprocess.check_output(input).decode("utf-8")
+        return subprocess.check_output(input).decode("utf-8").strip()
     except Exception as e:
         return f"Error: {e}"
 
