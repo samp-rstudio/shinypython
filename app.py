@@ -5,9 +5,8 @@ import sys
 from shiny import App, reactive, render, ui
 
 app_ui = ui.page_fluid(
-    ui.h2("Tool versions:"),
-    ui.span("Python"),
-    ui.output_text_verbatim("python"),
+    ui.h2("System details:"),
+    ui.output_table("system"),
     ui.input_text_area("cmd", "Command to run", placeholder="Enter text"),
     ui.output_text_verbatim("cmd_output"),
     ui.input_text_area("logme", "Text to log", placeholder="Enter text"),
@@ -19,9 +18,9 @@ app_ui = ui.page_fluid(
 
 def server(input, output, session):
     @output
-    @render.text
-    def python():
-        return platform.python_version()
+    @render.table
+    def system():
+        return [{"python version":platform.python_version()}]
 
     @output
     @render.text
