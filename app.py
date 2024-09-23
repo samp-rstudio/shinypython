@@ -1,6 +1,7 @@
 import multiprocessing
 import pandas as pd
 import platform
+import psutil
 import subprocess
 import sys
 
@@ -26,6 +27,7 @@ def server(input, output, session):
         return pd.DataFrame([
             {"name":"python version","value":platform.python_version()},
             {"name":"cpu count","value":multiprocessing.cpu_count()},
+            {"name":"memory","value":psutil.virtual_memory().total},
         ])
 
     @output
