@@ -1,13 +1,15 @@
+import multiprocessing
+import pandas as pd
 import platform
+import psutil
 import subprocess
 import sys
 
 from shiny import App, reactive, render, ui
 
 app_ui = ui.page_fluid(
-    ui.h2("Tool versions:"),
-    ui.span("Python"),
-    ui.output_text_verbatim("python"),
+    ui.h2("System details:"),
+    ui.output_table("system"),
     ui.input_text_area("cmd", "Command to run", placeholder="Enter text"),
     ui.output_text_verbatim("cmd_output"),
     ui.input_text_area("logme", "Text to log", placeholder="Enter text"),
@@ -19,9 +21,25 @@ app_ui = ui.page_fluid(
 
 def server(input, output, session):
     @output
-    @render.text
-    def python():
-        return platform.python_version()
+    @render.table
+    def system():
+        host_total = psutil.virtual_memory().total
+        host_mem = f"{int(host_total / 1024 / 1024 / 1024)} GiB ({host_total} bytes)"
+        cpu_max = run(["cat", "/sys/fs/cgroup/cpu.max"])
+        parts = cpu_max.split()
+        if len(parts) == 2:
+            cpu_limit = int(parts[0]) / int(parts[1])
+        else:
+            cpu_limit = cpu_max
+        memory_max=int(run(["cat", "/sys/fs/cgroup/memory.max"]))
+        pod_mem = f"{int(memory_max / 1024 / 1024 / 1024)} GiB ({memory_max} bytes)"
+        return pd.DataFrame([
+            {"name":"python version","value":platform.python_version()},
+            {"name":"host cpu count","value":multiprocessing.cpu_count()},
+            {"name":"host memory","value":host_mem},
+            {"name":"cpu limit","value":cpu_limit},
+            {"name":"memory limit","value":pod_mem},
+        ])
 
     @output
     @render.text
@@ -43,3 +61,10 @@ def server(input, output, session):
         return l
 
 app = App(app_ui, server)
+
+def run(input: list[str]) -> str:
+    try:
+        return subprocess.check_output(input).decode("utf-8").strip()
+    except Exception as e:
+        return f"Error: {e}"
+
