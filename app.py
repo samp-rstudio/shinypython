@@ -25,12 +25,14 @@ def server(input, output, session):
     def system():
         host_total = psutil.virtual_memory().total
         host_mem = f"{int(host_total / 1024 / 1024 / 1024)} GiB ({host_total} bytes)"
+        cpu_max = run(["cat", "/sys/fs/cgroup/cpu.max"])
         memory_max=int(run(["cat", "/sys/fs/cgroup/memory.max"]))
         pod_mem = f"{int(memory_max / 1024 / 1024 / 1024)} GiB ({memory_max} bytes)"
         return pd.DataFrame([
             {"name":"python version","value":platform.python_version()},
             {"name":"host cpu count","value":multiprocessing.cpu_count()},
             {"name":"host memory","value":host_mem},
+            {"name":"cpu limit","value":cpu_max),
             {"name":"memory limit","value":pod_mem},
         ])
 
