@@ -1,3 +1,4 @@
+import pandas as pd
 import platform
 import subprocess
 import sys
@@ -20,7 +21,7 @@ def server(input, output, session):
     @output
     @render.table
     def system():
-        return [{"python version":platform.python_version()}]
+        return pd.DataFrame([{"name":"python version","value":platform.python_version()}])
 
     @output
     @render.text
