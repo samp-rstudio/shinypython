@@ -1,3 +1,4 @@
+import multiprocessing
 import pandas as pd
 import platform
 import subprocess
@@ -21,7 +22,11 @@ def server(input, output, session):
     @output
     @render.table
     def system():
-        return pd.DataFrame([{"name":"python version","value":platform.python_version()}])
+        
+        return pd.DataFrame([
+            {"name":"python version","value":platform.python_version()},
+            {"name":"cpu count","value":multiprocessing.cpu_count()},
+        ])
 
     @output
     @render.text
