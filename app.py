@@ -6,10 +6,13 @@ import subprocess
 import sys
 
 from shiny import App, reactive, render, ui
+from urllib.parse import urlparse
 
 app_ui = ui.page_fluid(
     ui.h2("System details:"),
     ui.output_table("system"),
+    ui.h2("Request details:"),
+    ui.output_text_verbatim("request_output"),
     ui.input_text_area("cmd", "Command to run", placeholder="Enter text"),
     ui.output_text_verbatim("cmd_output"),
     ui.input_text_area("logme", "Text to log", placeholder="Enter text"),
@@ -50,6 +53,13 @@ def server(input, output, session):
         except Exception as e:
             return f"Error: {e}"
 
+    @output
+    @render.text
+    def request_output():
+        search = session.input[".clientdata_url_search"]()
+        return urlparse(search)
+
+    @output
     @render.text()
     @reactive.event(input.log_button)
     def logged():
